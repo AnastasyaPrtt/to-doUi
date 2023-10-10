@@ -134,12 +134,12 @@ export const Main: React.FC = () => {
 			modalAdd ? <Modal title={'Create task'} nameBtn={'Save'} active={modalAdd} onClickClose={handleCloseModal} onClickSave={createAddTask} IconBtn={<SaveIcon />}>
 				<input type="text" placeholder='Enter text...' value={text} onChange={(e) => setText(e.target.value)} />
 				<input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
-			</Modal> : ''
+			</Modal> : null
 		}
 		{
 			modalDelete ? <Modal title={'Delete task'} nameBtn={'Delete'} active={modalDelete} onClickClose={handleCloseModal} onClickSave={handleClickDelete} IconBtn={<DeleteIcon />}>
 				<h3>Are you sure about deleting this task?</h3>
-			</Modal> : ''
+			</Modal> : null
 		}
 	</>
 
