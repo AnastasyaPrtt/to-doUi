@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import { ListItem } from '@/components/ListItem';
 import { Menu } from '@/components/Menu/Menu';
 import { Modal } from '@/components/Modal';
@@ -6,15 +8,9 @@ import { MainStyle } from '@/components/style';
 import React, { useEffect, useState } from 'react';
 import { DeleteIcon, SaveIcon } from '../../public';
 import { dateNow } from '@/DateNow';
-import axios from 'axios';
 
 
 export const Main: React.FC = () => {
-	const [modal, setModal] = useState('none')
-	const [filter, setFilter] = useState('')
-
-	const [taskDelete, setTaskDelete] = useState<number>()
-	const [createTask, setCreateTask] = useState({ title: '', date: dateNow })
 	const [tasks, setTasks] = useState(
 		[
 			{
@@ -31,6 +27,32 @@ export const Main: React.FC = () => {
 			},
 		]
 	);
+
+	//TODO получение задач по id
+	async function getUser() {
+		try {
+			const response = await axios.get('http://localhost:5001/api/tasks/4');
+			setTasks(response.data)
+			console.log(response.data);
+		} catch (error) {
+			console.error(error);
+		}
+	}
+	async function createUser() {
+		try {
+			const response = await axios.post('http://localhost:5001/api/tasks/4', createTask);
+			console.log(response)
+		} catch (error) {
+			console.error(error);
+		}
+	}
+
+	const [modal, setModal] = useState('none')
+	const [filter, setFilter] = useState('')
+
+	const [taskDelete, setTaskDelete] = useState<number>()
+	const [createTask, setCreateTask] = useState({ title: '', date: dateNow })
+
 	const [renderTasks, setRenderTasks] = useState(tasks)
 
 	const handleCompleteStatusUpdate = (task: TaskProps) => {
@@ -45,16 +67,16 @@ export const Main: React.FC = () => {
 
 	const createAddTask = () => {
 		if (createTask.title == '') return;
-
-		const newTask = {
-			id: Date.now(),
-			title: createTask.title,
-			date: createTask.date,
-			isChecked: false
-		}
-		const newList = [...tasks, newTask]
-		setTasks(newList)
-		setCreateTask({ title: '', date: '' })
+		createUser()
+		// const newTask = {
+		// 	id: Date.now(),
+		// 	title: createTask.title,
+		// 	date: createTask.date,
+		// 	isChecked: false
+		// }
+		// const newList = [...tasks, newTask]
+		// // setTasks(newList)
+		// setCreateTask({ title: '', date: '' })
 		setModal('none')
 
 	}
@@ -94,7 +116,9 @@ export const Main: React.FC = () => {
 		setRenderTasks(tasks)
 	}, [tasks])
 
-
+	useEffect(() => {
+		getUser()
+	}, [])
 
 	return <>
 		<MainStyle>
