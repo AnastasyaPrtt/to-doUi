@@ -16,13 +16,18 @@ class TaskController {
 		return res.json(task)
 	}
 	async getAll(req, res, next) {
-		const { id } = req.params;
 
-		const tasks = await Task.findAll({ where: { userId: id } })
+		let { id, limit, page } = req.query;
+		page = page || 1;
+		limit = limit || 5;
+		let offset = page * limit - limit;
+
+		const tasks = await Task.findAndCountAll({ where: { userId: id }, limit, offset })
 		if (!tasks) {
-			return next(ApiError.badRequest('Пользователя еще нет задач'))
+			return next(ApiError.badRequest('У пользователя еще нет задач'))
 		}
 		return res.json(tasks)
+
 	}
 	// async getAll(req, res, next) {
 

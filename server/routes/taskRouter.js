@@ -4,6 +4,6 @@ const router = new Router()
 
 
 router.post('/:id', taskController.create);
-router.get('/:id', taskController.getAll)
+router.get('/', taskController.getAll)
 
 module.exports = router;

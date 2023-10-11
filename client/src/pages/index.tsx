@@ -2,6 +2,7 @@ import { Main } from '@/Layout/Main';
 import { Modal } from '@/components/Modal';
 import { useState } from 'react';
 import styled, { createGlobalStyle } from "styled-components";
+import Auth from './auth';
 
 const Global = createGlobalStyle`
   *{
@@ -20,10 +21,13 @@ const Global = createGlobalStyle`
 
 export default function Home() {
 
-	return (
-		<>
-			<Global />
-			<Main />
-		</>
-	);
+  const isAuth = true
+  return (
+    <>
+      <Global />
+      {
+        isAuth ? <Main /> : <Auth />
+      }
+    </>
+  );
 }
