@@ -21,11 +21,11 @@ export const Item: React.FC<TaskItemProps> = ({ handleCompleteStatusUpdate, hand
 	const handleEditClick = () => {
 		setIsEdited(!isEdited)
 	}
-	const handleEditText = (event) => {
+	const handleEditText = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setText(event.target.value)
 		handleClickEditTask(task, text)
 	}
-	const handleKeyDown = (event) => {
+	const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
 		if (event.key === 'Enter') {
 			setIsEdited(!isEdited)
 		}
@@ -61,14 +61,12 @@ export const Item: React.FC<TaskItemProps> = ({ handleCompleteStatusUpdate, hand
 						<button onClick={handleEditClick}>
 							<EditIcon />
 						</button>
-						<button onClick={() => onClick(task.id)}>
+						<button onClick={() => onClick(task)}>
 							<DeleteIcon />
 						</button>
 					</DropdownBtnStyled>
 
 				</div>
-
-
 			</div>
 		</ItemStyle>
 	</>

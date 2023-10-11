@@ -1,5 +1,4 @@
-import React, { FC, ReactNode } from "react";
-import styled from "styled-components";
+import React from "react";
 import { ListItemProps } from "./interface";
 import { Item } from "./Item";
 import { ListItemStyle } from './style';

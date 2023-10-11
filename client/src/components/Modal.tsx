@@ -17,18 +17,18 @@ export const Modal: FC<modalProps> = ({
 }) => {
 
 	return (
-		<ModalWrapStyle className={active ? "active" : ""}>
+		<ModalWrapStyle className={active == 'add' || active == 'delete' ? "active" : ""}>
 			<ModalStyle>
 				<div className="header-modal">
 					<h3>{title}</h3>
 				</div>
 				<div className="body-modal">{children}</div>
 				<div className="footer-modal">
-					<Button name={nameBtn} onClick={(e) => onClickSave(e.target)}>
+					<Button name={nameBtn} onClick={(e) => onClickSave(event.target)}>
 						{IconBtn}
 						{nameBtn}
 					</Button>
-					<Button name={"Close"} onClick={(e) => onClickClose(e.target)}>
+					<Button name={"Close"} onClick={(e) => onClickClose(event.target)}>
 						<CloseIcon />
 						{"Close"}
 					</Button>

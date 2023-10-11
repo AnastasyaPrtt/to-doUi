@@ -4,21 +4,20 @@ export interface TaskProps {
 	id: number,
 	title: string,
 	date: string,
-	isChecked: boolean,
-	order: 0 | 1,
+	isChecked: boolean
 }
 
 export interface TaskItemProps {
 	task: TaskProps,
-	handleCompleteStatusUpdate: () => TaskProps,
-	handleClickEditTask: () => TaskProps
-	onClick: () => any
+	handleCompleteStatusUpdate: (task:TaskProps) => void,
+	handleClickEditTask: (task: TaskProps, text:string) => void
+	onClick: (task:TaskProps) => any
 }
 export interface ListItemProps {
 	tasks: TaskProps[],
-	handleCompleteStatusUpdate: () => TaskProps,
-	handleOpenModalDelete: () => void,
-	handleClickEditTask: () => TaskProps
+	handleCompleteStatusUpdate: (task:TaskProps) => void,
+	handleOpenModalDelete: (task:TaskProps) => void,
+	handleClickEditTask: (task: TaskProps, text:string) => void
 }
 export interface taskProps {
 	id: number,
@@ -30,10 +29,10 @@ export interface modalProps {
 	children: ReactNode,
 	title: string,
 	nameBtn: string,
-	active: boolean,
+	active: string,
 	IconBtn: ReactNode,
-	onClickSave: () => void,
-	onClickClose: () => void
+	onClickSave: (event: React.MouseEvent<HTMLElement>) => void,
+	onClickClose: (event: React.MouseEvent<HTMLElement>) => void
 }
 export interface newTaskProps {
 	title: string,

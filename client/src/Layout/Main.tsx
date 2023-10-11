@@ -5,14 +5,16 @@ import { TaskProps } from '@/components/interface';
 import { MainStyle } from '@/components/style';
 import React, { useEffect, useState } from 'react';
 import { DeleteIcon, SaveIcon } from '../../public';
+import { dateNow } from '@/DateNow';
+import axios from 'axios';
 
 
 export const Main: React.FC = () => {
-	const [modalAdd, setModalAdd] = useState(false)
-	const [modalDelete, setModalDelete] = useState(false)
-	const [taskDelete, setTaskDelete] = useState()
-	const [text, setText] = useState('')
-	const [date, setDate] = useState('')
+	const [modal, setModal] = useState('none')
+	const [filter, setFilter] = useState('')
+
+	const [taskDelete, setTaskDelete] = useState<number>()
+	const [createTask, setCreateTask] = useState({ title: '', date: dateNow })
 	const [tasks, setTasks] = useState(
 		[
 			{
@@ -42,23 +44,21 @@ export const Main: React.FC = () => {
 	}
 
 	const createAddTask = () => {
-		if (text == '' || text == ' ') {
-			return;
-		}
+		if (createTask.title == '') return;
+
 		const newTask = {
 			id: Date.now(),
-			title: text,
-			date: date,
+			title: createTask.title,
+			date: createTask.date,
 			isChecked: false
 		}
 		const newList = [...tasks, newTask]
 		setTasks(newList)
-		setText('')
-		setDate('')
-		setModalAdd(false)
+		setCreateTask({ title: '', date: '' })
+		setModal('none')
 
 	}
-	const handleClickEditTask = (task, text) => {
+	const handleClickEditTask = (task: TaskProps, text: string) => {
 		console.log(task);
 		setTasks(tasks.map(item => {
 			if (item.id == task.id) {
@@ -67,62 +67,44 @@ export const Main: React.FC = () => {
 			return item
 		}))
 	}
-	const handleCloseModal = () => {
-		setModalAdd(false)
-		setModalDelete(false)
-	}
-	const handleClickOpenModal = () => {
-		setModalAdd(true)
-	}
-	const handleOpenModalDelete = (task) => {
-		setModalDelete(true)
-		setTaskDelete(task)
+	const handleOpenModalDelete = (task: TaskProps) => {
+		setModal('delete')
+		setTaskDelete(task.id)
 	}
 	const handleClickDelete = () => {
 		setTasks(tasks.filter(item => item.id !== taskDelete))
-		setModalDelete(false)
+		setModal('none')
 	}
-	const filterToday = () => {
-		const dateNow = String(new Date().getFullYear() + '-' + (new Date().getMonth() + 1 < 10 ? '0' + new Date().getMonth() + 1 : new Date().getMonth() + 1) + '-' + (new Date().getDate() < 10 ? '0' + new Date().getDate() : new Date().getDate()));
-		setRenderTasks(tasks.filter(task => task.date == dateNow))
-	}
-	const filterDate = () => {
-		setRenderTasks(tasks.sort((task1, task2) => {
+
+	useEffect(() => {
+		filter == 'all' && setRenderTasks(tasks.filter(task => task))
+		filter == 'done' && setRenderTasks(tasks.filter(task => task.isChecked))
+		filter == 'undone' && setRenderTasks(tasks.filter(task => !task.isChecked))
+		if (filter == 'today') setRenderTasks(tasks.filter(task => task.date === dateNow))
+
+		if (filter == 'date') setRenderTasks(tasks.sort((task1, task2) => {
 			if (task1.date > task2.date) return 1
 			if (task1.date < task2.date) return -1
 			return 0
 		}).map(task => task))
-	}
-	const filterAll = () => {
-		setRenderTasks(tasks.filter(task => task))
-	}
-	const filterDone = () => {
-		setRenderTasks(tasks.filter(task => task.isChecked))
-	}
-	const filterUndone = () => {
-		setRenderTasks(tasks.filter(task => !task.isChecked))
-	}
+
+	}, [filter, tasks])
 
 	useEffect(() => {
 		setRenderTasks(tasks)
 	}, [tasks])
 
-	// useEffect(()=>{
-	// 	constg sortedTasks = [...tasks]
-	// 	if(filter.today){
-	// 		sortedTasks.filter(today)
-	// 	}
-	// 	if(filter.status !=='all') {
-	// 		sortedTasks.filter(filter.status)
-	// 	}
-	// 	sortedTask.sort(filter.date)
-	// },[
-	// 	filter,tasks
-	// ])
+
 
 	return <>
 		<MainStyle>
-			<Menu onClick={handleClickOpenModal} filterToday={filterToday} filterAll={filterAll} filterDone={filterDone} filterUndone={filterUndone} filterDate={filterDate} />
+			<Menu
+				onClick={() => setModal('add')}
+				filterToday={() => setFilter('today')}
+				filterAll={() => setFilter('all')}
+				filterDone={() => setFilter('done')}
+				filterUndone={() => setFilter('undone')}
+				filterDate={() => setFilter('date')} />
 			<ListItem
 				tasks={renderTasks}
 				handleOpenModalDelete={handleOpenModalDelete}
@@ -131,15 +113,17 @@ export const Main: React.FC = () => {
 			/>
 		</MainStyle>
 		{
-			modalAdd ? <Modal title={'Create task'} nameBtn={'Save'} active={modalAdd} onClickClose={handleCloseModal} onClickSave={createAddTask} IconBtn={<SaveIcon />}>
-				<input type="text" placeholder='Enter text...' value={text} onChange={(e) => setText(e.target.value)} />
-				<input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
-			</Modal> : null
+			modal == 'add' &&
+			<Modal title={'Create task'} nameBtn={'Save'} active={modal} onClickClose={() => setModal('none')} onClickSave={createAddTask} IconBtn={<SaveIcon />}>
+				<input type="text" placeholder='Enter text...' value={createTask.title} onChange={(e) => setCreateTask(createTask => ({ ...createTask, title: e.target.value }))} />
+				<input type="date" value={createTask.date} onChange={(e) => setCreateTask(createTask => ({ ...createTask, date: e.target.value }))} />
+			</Modal>
 		}
 		{
-			modalDelete ? <Modal title={'Delete task'} nameBtn={'Delete'} active={modalDelete} onClickClose={handleCloseModal} onClickSave={handleClickDelete} IconBtn={<DeleteIcon />}>
+			modal == 'delete' &&
+			<Modal title={'Delete task'} nameBtn={'Delete'} active={modal} onClickClose={() => setModal('none')} onClickSave={handleClickDelete} IconBtn={<DeleteIcon />}>
 				<h3>Are you sure about deleting this task?</h3>
-			</Modal> : null
+			</Modal>
 		}
 	</>
 

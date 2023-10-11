@@ -5,8 +5,8 @@ import { ButtonStyle } from '../style'
 
 export const Button: React.FC<ButtonInterface> = ({ children, name, onClick }) => {
 
-	const handleClick = (event) => {
-		onClick(event.target)
+	const handleClick = (event: EventTarget) => {
+		onClick(event)
 	}
 
 	return <>
