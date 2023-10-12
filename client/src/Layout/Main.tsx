@@ -5,48 +5,49 @@ import { Menu } from '@/components/Menu/Menu';
 import { Modal } from '@/components/Modal';
 import { TaskProps } from '@/components/interface';
 import { MainStyle } from '@/components/style';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { DeleteIcon, SaveIcon } from '../../public';
 import { dateNow } from '@/DateNow';
+import { Context } from '@/pages/_app';
 
 
 export const Main: React.FC = () => {
-	const [tasks, setTasks] = useState(
-		[
-			{
-				id: 1,
-				title: "first task",
-				date: "2023-10-04",
-				isChecked: false
-			},
-			{
-				id: 2,
-				title: "second task",
-				date: "2023-10-03",
-				isChecked: false
-			},
-		]
-	);
+	// const [tasks, setTasks] = useState(
+	// 	[
+	// 		{
+	// 			id: 1,
+	// 			title: "first task",
+	// 			date: "2023-10-04",
+	// 			isChecked: false
+	// 		},
+	// 		{
+	// 			id: 2,
+	// 			title: "second task",
+	// 			date: "2023-10-03",
+	// 			isChecked: false
+	// 		},
+	// 	]
+	// );
 
 	//TODO получение задач по id
-	async function getUser() {
-		try {
-			const response = await axios.get('http://localhost:5001/api/tasks/4');
-			setTasks(response.data)
-			console.log(response.data);
-		} catch (error) {
-			console.error(error);
-		}
-	}
-	async function createUser() {
-		try {
-			const response = await axios.post('http://localhost:5001/api/tasks/4', createTask);
-			console.log(response)
-		} catch (error) {
-			console.error(error);
-		}
-	}
-
+	// async function getUser() {
+	// 	try {
+	// 		const response = await axios.get('http://localhost:5001/api/tasks/4');
+	// 		setTasks(response.data)
+	// 		console.log(response.data);
+	// 	} catch (error) {
+	// 		console.error(error);
+	// 	}
+	// }
+	// async function createUser() {
+	// 	try {
+	// 		const response = await axios.post('http://localhost:5001/api/tasks/4', createTask);
+	// 		console.log(response)
+	// 	} catch (error) {
+	// 		console.error(error);
+	// 	}
+	// }
+	const { task } = useContext(Context)
 	const [modal, setModal] = useState('none')
 	const [filter, setFilter] = useState('')
 
@@ -56,13 +57,13 @@ export const Main: React.FC = () => {
 	const [renderTasks, setRenderTasks] = useState(tasks)
 
 	const handleCompleteStatusUpdate = (task: TaskProps) => {
-		const newList = tasks.map(item => {
+		const newList = task.tasks.map(item => {
 			if (item.id === task.id) {
 				item.isChecked = task.isChecked
 			}
 			return item
 		});
-		setTasks(newList)
+		tasks.set(newList)
 	}
 
 	const createAddTask = () => {

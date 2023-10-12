@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import { ListItemProps } from "./interface";
 import { Item } from "./Item";
 import { ListItemStyle } from './style';
+import { Context } from '@/pages/_app';
 
 
 
@@ -11,6 +12,7 @@ export const ListItem: React.FC<ListItemProps> = ({
 	handleCompleteStatusUpdate,
 	handleClickEditTask
 }) => {
+
 	return (
 		<>
 			<ListItemStyle>

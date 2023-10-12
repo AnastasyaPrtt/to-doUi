@@ -1,8 +1,9 @@
-import React, { useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { CheckedIcon, DeleteIcon, EditIcon, InfoIcon } from '../../public';
 import { TaskItemProps } from './interface';
 import { DropdownBtnStyled, ItemStyle } from './style';
 import useOnClickOutside from './useOnClickOutside';
+import { Context } from '@/pages/_app';
 
 
 export const Item: React.FC<TaskItemProps> = ({ handleCompleteStatusUpdate, handleClickEditTask, onClick, task }) => {

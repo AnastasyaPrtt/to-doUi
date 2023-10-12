@@ -1,10 +1,12 @@
-import { Main } from '@/Layout/Main';
 import { Modal } from '@/components/Modal';
-import { useState } from 'react';
 import styled, { createGlobalStyle } from "styled-components";
-import Auth from './auth';
+import { Layout } from '@/Layout/Layout';
+import { useContext, useEffect } from 'react';
+import { Context } from './_app';
+import Router, { useRouter } from 'next/router';
+import { Content } from '@/Layout/Content';
 
-const Global = createGlobalStyle`
+export const Global = createGlobalStyle`
   *{
     box-sizing: border-box;
     margin: 0;
@@ -19,15 +21,22 @@ const Global = createGlobalStyle`
 `
 
 
-export default function Home() {
 
-  const isAuth = true
-  return (
-    <>
-      <Global />
-      {
-        isAuth ? <Main /> : <Auth />
-      }
-    </>
-  );
+export default function Home() {
+	const { user } = useContext(Context)
+	const router = useRouter();
+	useEffect(() => {
+		if (!user.isAuth) {
+			router.push('/login', undefined, { shallow: true })
+		}
+	}, [])
+
+	return (
+		<>
+			<Global />
+			<Layout>
+				<Content />
+			</Layout>
+		</>
+	);
 }
